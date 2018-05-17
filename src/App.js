@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import L from 'leaflet';
+
+import  MyMap  from './components/MyMap';
+import Header from './components/Header';
+import Footer from './components/Footer';
+
 import './App.css';
+import './styles/app.css';
 
 class App extends Component {
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Les ressources de l'autoconstructeur</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <Header />
+        <MyMap />
+        <Footer />
       </div>
-    );
+    )
   }
 }
 

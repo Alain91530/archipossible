@@ -1,0 +1,26 @@
+#map {
+    height: 80vh;
+}
+
+.footer {
+    text-align: center;
+}
+.header {
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+}
+
+.header-title {
+    text-align: center;
+    width: 80vw;
+}
+.logo {
+    background-image: url('../images/logo-archi-possible-autoconstruction.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    font-size: 0;
+    margin: 0.5vw;
+    height: auto;
+    width: 15vw;
+}
