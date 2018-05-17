@@ -7,8 +7,10 @@ import '../styles/app.css'
 class MyMap extends Component {
 
   componentDidMount() {
-    const center = {lat: 48.589172, lng: 2.246237}
+    const center = {lat: 48.589172, lng: 2.246237};
     const zoom = 11;
+    const archipossible = {title: 'Archipossble', position: {lat: 48.589472, lng: 2.248539}, type: 'general'}
+
     // create map
     this.map = L.map('map', {
       center: center,
@@ -19,6 +21,8 @@ class MyMap extends Component {
         }),
       ]
     });
+
+    this.archipossibleMarker = L.marker(archipossible.position).addTo(this.map);
   }
 
   render() {
