@@ -3,9 +3,21 @@
 }
 
 .footer {
+    background-color: #442F50;
+    color: white;
+    height: 5vh;
+    line-height: 5vh;
+    margin: 0;
     text-align: center;
 }
+
+.footer-text{
+    margin: 0;
+}
+
 .header {
+    background-color: #442F50;
+    color: white;
     display: flex;
     flex-flow: wrap;
     width: 100%;

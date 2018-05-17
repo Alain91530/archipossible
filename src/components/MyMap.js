@@ -22,7 +22,7 @@ class MyMap extends Component {
       ]
     });
 
-    this.archipossibleMarker = L.marker(archipossible.position).addTo(this.map);
+    this.archipossibleMarker = L.marker(archipossible.position).addTo(this.map).bindPopup(archipossible.title);
   }
 
   render() {
