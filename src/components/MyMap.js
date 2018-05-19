@@ -44,14 +44,19 @@ class MyMap extends Component {
     });
 
     this.poi = new L.LayerGroup();
-    pointsOfInterest.map(point =>{ L.marker([point.position.lat, point.position.lng]).bindPopup(point.title).addTo(this.map);return (point)})
-
+    pointsOfInterest.map(point =>{ L.marker([point.position.lat, point.position.lng]).bindPopup(point.title).addTo(this.map);return (point);});
+    this.markers = {POI: this.poi};
     this.baselayers = {
-      imagery : L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+      imagerie : L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+      OSM: L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'}),
+      Topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+      }),
       ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};
     this.baselayers.ESRI.addTo(this.map);
 
-    L.control.layers(this.baselayers, {POI:this.poi}).addTo(this.map);
+    L.control.layers(this.baselayers, this.markers).addTo(this.map);
     /**
      * Add Archipossible marker
      */
