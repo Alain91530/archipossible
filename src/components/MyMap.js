@@ -12,7 +12,6 @@ class MyMap extends Component {
     const zoom = 13;
     const archipossible = {title: 'Archipossble', position: {lat: 48.589472, lng: 2.248539}, type: 'general'};
     const pointsOfInterest = [
-     // {title: 'Archipossble', position: {lat: 48.589472, lng: 2.248539}, type: 'general'},
       {title: 'Ateliers 29', position: {lat: 48.589716, lng: 2.25188}, type: 'general'},
       {title: 'Mairie', position: {lat: 48.590137, lng: 2.247635}, type: 'general'},
       {title: 'Depan\'Num', position: {lat: 48.587788, lng: 2.115107}, type: 'general'},
@@ -64,13 +63,30 @@ class MyMap extends Component {
       shadowAnchor: [4, 62],  // the same for the shadow
       popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
+    let orangeIcon = L.icon({
+      iconUrl: '../icons/leaf-orange.png',
+      shadowUrl: 'leaf-shadow.png',
+      iconSize:     [38, 95], // size of the icon
+      shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
     /**
      * creates the markers
      */
     let poi = new L.LayerGroup();
     pointsOfInterest.map(point => {
-      L.marker([point.position.lat, point.position.lng],{icon: greenIcon}).bindPopup(point.title).addTo(this.map);return (point);
-    });
+      if (point.type === 'sortie') {
+      L.marker([point.position.lat, point.position.lng],{icon: greenIcon}).bindPopup(point.title).addTo(this.map);return (point)
+      }
+      else
+      L.marker([point.position.lat, point.position.lng],{icon: orangeIcon}).bindPopup(point.title).addTo(this.map);return (point)
+
+      ;
+    })
+      ;
     let allMarkers = pointsOfInterest.map(marker => [marker.position.lat, marker.position.lng]);
     let markers = {POI: poi};
     /**
