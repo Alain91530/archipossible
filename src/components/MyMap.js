@@ -9,7 +9,7 @@ class MyMap extends Component {
 
   componentDidMount() {
     const center = {lat: 48.589172, lng: 2.246237};
-    const zoom = 6;
+    const zoom = 13;
     const archipossible = {title: 'Archipossble', position: {lat: 48.589472, lng: 2.248539}, type: 'general'};
     const pointsOfInterest = [
       {title: 'Archipossble', position: {lat: 48.589472, lng: 2.248539}, type: 'general'},
@@ -43,9 +43,18 @@ class MyMap extends Component {
       ]
     });
 
-    this.poi = new L.LayerGroup();
-    pointsOfInterest.map(point =>{ L.marker([point.position.lat, point.position.lng]).bindPopup(point.title).addTo(this.map);return (point);});
-    this.markers = {POI: this.poi};
+    /**
+     * creates the markers
+     */
+    let poi = new L.LayerGroup();
+    pointsOfInterest.map(point => {
+      L.marker([point.position.lat, point.position.lng]).bindPopup(point.title).addTo(this.map);return (point);
+    });
+    let allMarkers = pointsOfInterest.map(marker => [marker.position.lat, marker.position.lng]);
+    let markers = {POI: poi};
+    /**
+     *  create the choice of layers
+     */
     this.baselayers = {
       imagerie : L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
       OSM: L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -56,11 +65,21 @@ class MyMap extends Component {
       ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};
     this.baselayers.ESRI.addTo(this.map);
 
-    L.control.layers(this.baselayers, this.markers).addTo(this.map);
+    /**
+     * Add the control to choose the map layer and markers
+     */
+    L.control.layers(this.baselayers, markers).addTo(this.map);
+
+    /**
+     * adjust map to fit markers position
+     */
+    this.map.fitBounds(allMarkers);
+
     /**
      * Add Archipossible marker
      */
-    this.archipossibleMarker = L.marker(archipossible.position).addTo(this.map).bindPopup(archipossible.title);
+    let archiMarker = '<p class="archipossible">'+archipossible.title+'</p>'
+    this.archipossibleMarker = L.marker(archipossible.position).addTo(this.map).bindPopup(archiMarker);
   }
 
   render() {
