@@ -42,53 +42,36 @@ class MyMap extends Component {
       ]
     });
     /**
-     * create the differents icons
+     * create the different icons
      */
-    let redIcon = L.icon({
-      iconUrl: '../icons/leaf-red.png',
-      shadowUrl: 'leaf-shadow.png',
-      iconSize:     [38, 95], // size of the icon
-      shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    let LeafIcon = L.Icon.extend({
+      options: {
+        shadowUrl: 'leaf-shadow.png',
+        iconSize:     [38, 95],
+        shadowSize:   [50, 64],
+        iconAnchor:   [22, 94],
+        shadowAnchor: [4, 62],
+        popupAnchor:  [-3, -76]
+      }
     });
-
-    let greenIcon = L.icon({
-      iconUrl: '../icons/leaf-green.png',
-      shadowUrl: 'leaf-shadow.png',
-      iconSize:     [38, 95], // size of the icon
-      shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
-    let orangeIcon = L.icon({
-      iconUrl: '../icons/leaf-orange.png',
-      shadowUrl: 'leaf-shadow.png',
-      iconSize:     [38, 95], // size of the icon
-      shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-      shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
+    let greenIcon = new LeafIcon({iconUrl: '../icons/leaf-green.png'});
+    let redIcon = new LeafIcon({iconUrl: '../icons/leaf-red.png'});
+    let orangeIcon = new LeafIcon({iconUrl: '../icons/leaf-orange.png'});
 
     /**
      * creates the markers
      */
-    let poi = new L.LayerGroup();
+    let poiTrip = new L.LayerGroup();
     pointsOfInterest.map(point => {
-      if (point.type === 'sortie') {
-      L.marker([point.position.lat, point.position.lng],{icon: greenIcon}).bindPopup(point.title).addTo(this.map);return (point)
-      }
-      else
-      L.marker([point.position.lat, point.position.lng],{icon: orangeIcon}).bindPopup(point.title).addTo(this.map);return (point)
-
-      ;
+      (point.type === 'sortie')
+        ? L.marker([point.position.lat, point.position.lng],{icon: greenIcon}).bindPopup(point.title).addTo(this.map)
+        : L.marker([point.position.lat, point.position.lng],{icon: orangeIcon}).bindPopup(point.title).addTo(this.map);
+      return null;
     })
-      ;
+    ;
     let allMarkers = pointsOfInterest.map(marker => [marker.position.lat, marker.position.lng]);
-    let markers = {POI: poi};
+    let markers = {POI: poiTrip};
+
     /**
      *  create the choice of layers
      */
