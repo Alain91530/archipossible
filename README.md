@@ -1,4 +1,4 @@
-# A simple and basic example of an openstreetmap with React
+# A simple and basic example of an openstreetmap with React and Leaflet
 
 ## A simple map with markers using leaflet
 
