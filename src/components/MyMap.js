@@ -8,11 +8,44 @@ import '../styles/app.css';
 /**
  * @description data
  */
-const center = {lat: 48.589172, lng: 2.246237};
-const zoom = 13;
 const archipossible = {title: 'Archipossble', position: {lat: 48.589472, lng: 2.248539}, type: 'general'};
 
-const resources = [
+/**
+ * @description create the choice of map layers
+ */
+const baselayers = {
+  imagerie : L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+  OSM: L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'}),
+  Topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  }),
+  ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};let archipossibleMarker;
+
+/**
+ * @description create the different icons
+ */
+const LeafIcon = L.Icon.extend({
+  options: {
+    shadowUrl: 'leaf-shadow.png',
+    iconSize:     [38, 95],
+    shadowSize:   [50, 64],
+    iconAnchor:   [22, 94],
+    shadowAnchor: [4, 62],
+    popupAnchor:  [-3, -76]
+  }
+});
+
+const greenIcon = new LeafIcon({iconUrl: '../icons/leaf-green.png'});
+const redIcon = new LeafIcon({iconUrl: '../icons/leaf-red.png'});
+const orangeIcon = new LeafIcon({iconUrl: '../icons/leaf-orange.png'});
+
+/**
+ * @description create Archipossible marker
+ */
+const archiMarker = '<p class="archipossible">'+archipossible.title+'</p>';
+
+const allResources = [
   {title: 'Ateliers 29', position: {lat: 48.589716, lng: 2.25188}, type: 'autre'},
   {title: 'Mairie', position: {lat: 48.590137, lng: 2.247635}, type: 'autre'},
   {title: 'Depan\'Num', position: {lat: 48.587788, lng: 2.115107}, type: 'informatique'},
@@ -41,96 +74,52 @@ function markersArray(items, icon) {
     markers.addLayer(marker);
   });
 
-  /*  markers.on('mouseover', function(e){ e.layer.openPopup(); })
-    .on('mouseout', function(e){ e.layer.closePopup(); });*/
   return markers;
 }
 class MyMap extends Component {
 
-  componentDidMount() {
+  render() {
 
-    /**
-     *  create the map
-     */
-    this.map = L.map('map', {
-      center: center,
-      zoom: zoom,
-      layers: [
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        }),
-      ]
-    });
+    const mapLoaded = this.props.mapLoaded;
+    const map = this.props.map;
+    const trips = this.props.trips;
+    const resources = this.props.resources;
 
-    /**
-     * @description create the different icons
-     */
-    let LeafIcon = L.Icon.extend({
-      options: {
-        shadowUrl: 'leaf-shadow.png',
-        iconSize:     [38, 95],
-        shadowSize:   [50, 64],
-        iconAnchor:   [22, 94],
-        shadowAnchor: [4, 62],
-        popupAnchor:  [-3, -76]
-      }
-    });
-    let greenIcon = new LeafIcon({iconUrl: '../icons/leaf-green.png'});
-    let redIcon = new LeafIcon({iconUrl: '../icons/leaf-red.png'});
-    let orangeIcon = new LeafIcon({iconUrl: '../icons/leaf-orange.png'});
+    if (mapLoaded) {
+      baselayers.ESRI.addTo(map);
 
-    /**
-     * @description create the choice of map layers
-     */
-    this.baselayers = {
-      imagerie : L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
-      OSM: L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'}),
-      Topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-      }),
-      ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};
-    this.baselayers.ESRI.addTo(this.map);
-
-    /**
+      /**
      * @description create and add the trips markers
      */
-    let poiTrip = markersArray(trip, greenIcon);
-    this.map.addLayer(poiTrip);
+      let poiTrip = markersArray(trip, greenIcon);
+      (trips) ? map.addLayer(poiTrip) : map.removeLayer(poiTrip);
 
-    /**
+      /**
      * @description create and add the resources markers
      */
-    let poiResource = markersArray(resources, orangeIcon);
-    this.map.addLayer(poiResource);
+      let poiResource = markersArray(allResources, orangeIcon);
+      (resources) ? map.addLayer(poiResource) : map.removeLayer(poiResource);
 
-    /**
+      /**
      * @description add the control to choose the map layer and markers
      */
-    let markers = {
-      Ressources: poiResource,
-      Sorties: poiTrip
-    };
-    L.control.layers(this.baselayers, markers).addTo(this.map);
+      let markers = {
+        Ressources: poiResource,
+        Sorties: poiTrip
+      };
+      L.control.layers(baselayers, markers).addTo(map);
 
-    /**
-     * adjust map to fit markers position
-     */
-    let bounds = poiResource.getBounds();
-    bounds = bounds.extend(poiTrip.getBounds());
-    this.map.fitBounds(bounds);
+      archipossibleMarker = L.marker(archipossible.position, {icon: redIcon}).addTo(map).bindPopup(archiMarker);
 
-    /**
-     * @description add Archipossible marker
-     */
-    let archiMarker = '<p class="archipossible">'+archipossible.title+'</p>';
-    this.archipossibleMarker = L.marker(archipossible.position, {icon: redIcon}).addTo(this.map).bindPopup(archiMarker);
-  }
-
-  render() {
+      /**
+       * adjust map to fit markers position
+      */
+      let bounds = poiResource.getBounds();
+      bounds = bounds.extend(poiTrip.getBounds());
+      map.fitBounds(bounds);
+    }
     return (
       <div className="ressource-map">
-        <div id="map"></div>
       </div>);
   }
 }

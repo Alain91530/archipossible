@@ -21,22 +21,55 @@ import './App.css';
 import './styles/app.css';
 /* eslint-enable */
 
+const center = {lat: 48.589172, lng: 2.246237};
+const zoom = 13;
+let map;
 /**
  * @description main component of the application
  */
+
 class App extends Component {
+  state = {
+    mapLoaded: false,
+    resources: true,
+    trips: true
+  }
+  componentDidMount() {
+
+    /**
+     *  create the map
+     */
+    map = L.map('map', {
+      center: center,
+      zoom: zoom,
+      layers: [
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }),
+      ]
+    });
+    this.setState({ mapLoaded: true });
+  }
 
   render() {
+    const { mapLoaded, resources, trips } = this.state;
     return (
       <div>
         <Header />
         <main>
           <SideBar />
-          <MyMap />
+          <div id="map">
+            <MyMap
+              mapLoaded = { mapLoaded }
+              map = { map }
+              resources = { resources }
+              trips = { trips }
+            />
+          </div>
         </main>
         <Footer />
       </div>
-    )
+    );
   }
 }
 
