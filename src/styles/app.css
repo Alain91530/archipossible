@@ -1,5 +1,21 @@
+main {
+    display: flex;
+    flex-flow: wrap;
+}
+aside {
+    padding-left: 1vw;
+    width: 19vw;;
+}
 #map {
     height: 80vh;
+}
+.ressource-map {
+    width: 80vw;
+}
+
+.categories-names {
+    list-style: none;
+    padding-left: 0;
 }
 .archipossible {
     background-image: url('../images/logo-archi-possible-autoconstruction.svg');
