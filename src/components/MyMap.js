@@ -116,7 +116,9 @@ class MyMap extends Component {
     /**
      * adjust map to fit markers position
      */
-    // this.map.fitBounds(allMarkers);
+    let bounds = poiResource.getBounds();
+    bounds = bounds.extend(poiTrip.getBounds());
+    this.map.fitBounds(bounds);
 
     /**
      * @description add Archipossible marker
