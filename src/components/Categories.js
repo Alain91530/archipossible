@@ -34,7 +34,8 @@ class Categories extends Component {
                     id={ categorie }
                     name={ categorie }
                     defaultChecked="checked"
-                    value={ categorie }/>
+                    value={ categorie }
+                    onClick= {this.props.boxClicked} />
                   { categorie.charAt(0).toUpperCase()+categorie.substring(1) }
                 </label>
               </li>

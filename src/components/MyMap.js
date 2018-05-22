@@ -20,7 +20,9 @@ const baselayers = {
   Topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
   }),
-  ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};let archipossibleMarker;
+  ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};
+
+let archipossibleMarker;
 
 /**
  * @description create the different icons
@@ -65,25 +67,39 @@ const trip = [
   {title: 'FRAC Orléans', position: {lat:  47.904094, lng: 1.896835},type: 'sortie'},
   {title: 'Musée des Arts et Metiers', position: {lat: 48.866639, lng: 2.355438},type: 'sortie'}
 ];
+let markersTrip = new L.featureGroup();
+let markersResources = new L.featureGroup();
+let lControl;
+function markersArray(markerGroup, items, icon) {
 
-function markersArray(items, icon) {
-  let markers = new L.featureGroup();
   let marker;
   items.forEach(item => {
     marker = new L.marker([item.position.lat,item.position.lng], {icon: icon}).bindPopup(item.title);
-    markers.addLayer(marker);
+    markerGroup.addLayer(marker);
   });
 
-  return markers;
+  return markerGroup;
 }
 class MyMap extends Component {
 
+  state = {
+    trip: trip,
+    allResources: allResources,
+    controlExist: false,
+  }
+
+  componentDidMount(){
+    console.log(this.props.mapLoaded);
+    console.log(document.querySelector('.leaflet-control-layers'))
+  }
   render() {
 
     const mapLoaded = this.props.mapLoaded;
     const map = this.props.map;
     const trips = this.props.trips;
     const resources = this.props.resources;
+console.log(mapLoaded)
+console.log(document.querySelector('.leaflet-control-layers'))
 
     if (mapLoaded) {
       baselayers.ESRI.addTo(map);
@@ -91,13 +107,13 @@ class MyMap extends Component {
       /**
      * @description create and add the trips markers
      */
-      let poiTrip = markersArray(trip, greenIcon);
+      let poiTrip = markersArray(markersTrip, trip, greenIcon);
       (trips) ? map.addLayer(poiTrip) : map.removeLayer(poiTrip);
 
       /**
      * @description create and add the resources markers
      */
-      let poiResource = markersArray(allResources, orangeIcon);
+      let poiResource = markersArray(markersResources, allResources, orangeIcon);
       (resources) ? map.addLayer(poiResource) : map.removeLayer(poiResource);
 
       /**
@@ -107,7 +123,8 @@ class MyMap extends Component {
         Ressources: poiResource,
         Sorties: poiTrip
       };
-      L.control.layers(baselayers, markers).addTo(map);
+      if (document.querySelector('.leaflet-control-layers')===null)
+     L.control.layers(baselayers, markers).addTo(map);
 
       archipossibleMarker = L.marker(archipossible.position, {icon: redIcon}).addTo(map).bindPopup(archiMarker);
 

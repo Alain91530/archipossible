@@ -21,7 +21,8 @@ class SideBar extends Component {
   render() {
     return(
       <aside className="sidebar">
-        <Categories />
+        <Categories
+          boxClicked = {this.props.boxClicked}/>
         <Resources />
       </aside>
     );
