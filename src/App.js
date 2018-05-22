@@ -33,6 +33,7 @@ let map;
 class App extends Component {
   state = {
     mapLoaded: false,
+    archipossible: true,
     resources: true,
     trips: true
   }
@@ -47,6 +48,10 @@ class App extends Component {
      case 'ressources':
        categorie = this.state.resources;
        this.setState({ resources: !categorie });
+       break;
+     case 'archipossible':
+       categorie = this.state.archipossible;
+       this.setState({ archipossible: !categorie });
        break;
      default:
        break;
@@ -71,7 +76,7 @@ class App extends Component {
    }
 
    render() {
-     const { mapLoaded, resources, trips } = this.state;
+     const { mapLoaded, archipossible, resources, trips } = this.state;
      return (
        <div>
          <Header />
@@ -82,6 +87,7 @@ class App extends Component {
              <MyMap
                mapLoaded = { mapLoaded }
                map = { map }
+               markerArchipossible = { archipossible }
                resources = { resources }
                trips = { trips }
              />

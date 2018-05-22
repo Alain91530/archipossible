@@ -20,9 +20,9 @@ const baselayers = {
   Topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
   }),
-  ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};
+ESRI: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}')};
 
-let archipossibleMarker;
+//let archipossibleMarker;
 
 /**
  * @description create the different icons
@@ -69,7 +69,6 @@ const trip = [
 ];
 let markersTrip = new L.featureGroup();
 let markersResources = new L.featureGroup();
-let lControl;
 function markersArray(markerGroup, items, icon) {
 
   let marker;
@@ -80,57 +79,62 @@ function markersArray(markerGroup, items, icon) {
 
   return markerGroup;
 }
+
 class MyMap extends Component {
 
   state = {
+    baselayerUsed: 'ESRI',
     trip: trip,
     allResources: allResources,
     controlExist: false,
   }
 
+
+  tileLayerChange = (evt) => {
+    console.log(evt.name)
+    this.setState({baselayerUsed: evt.name});
+  }
+  
   componentDidMount(){
-    console.log(this.props.mapLoaded);
-    console.log(document.querySelector('.leaflet-control-layers'))
+
   }
   render() {
-
-    const mapLoaded = this.props.mapLoaded;
-    const map = this.props.map;
-    const trips = this.props.trips;
-    const resources = this.props.resources;
-console.log(mapLoaded)
-console.log(document.querySelector('.leaflet-control-layers'))
+    const { mapLoaded, map, markerArchipossible, trips, resources } = this.props;
 
     if (mapLoaded) {
-      baselayers.ESRI.addTo(map);
+      baselayers[this.state.baselayerUsed].addTo(map);
+      map.on('baselayerchange', this.tileLayerChange);
 
       /**
-     * @description create and add the trips markers
-     */
+       * @description create and add the trips markers
+       */
       let poiTrip = markersArray(markersTrip, trip, greenIcon);
       (trips) ? map.addLayer(poiTrip) : map.removeLayer(poiTrip);
 
       /**
-     * @description create and add the resources markers
-     */
+       * @description create and add the resources markers
+       */
       let poiResource = markersArray(markersResources, allResources, orangeIcon);
       (resources) ? map.addLayer(poiResource) : map.removeLayer(poiResource);
 
       /**
-     * @description add the control to choose the map layer and markers
-     */
-      let markers = {
-        Ressources: poiResource,
+       * @description add the control to choose the map layer and markers
+       */
+      let markerLayer = {
+        Resources: poiResource,
         Sorties: poiTrip
       };
-      if (document.querySelector('.leaflet-control-layers')===null)
-     L.control.layers(baselayers, markers).addTo(map);
 
-      archipossibleMarker = L.marker(archipossible.position, {icon: redIcon}).addTo(map).bindPopup(archiMarker);
+      if (document.querySelector('.leaflet-control-layers')===null)
+        L.control.layers(baselayers, markerLayer).addTo(map);
+
+      (markerArchipossible)
+        ? L.marker(archipossible.position, {icon: redIcon}).addTo(map).bindPopup(archiMarker)
+        : L.marker(archipossible.position, {icon: redIcon}).remove(map);
 
       /**
        * adjust map to fit markers position
-      */
+       */
       let bounds = poiResource.getBounds();
       bounds = bounds.extend(poiTrip.getBounds());
       map.fitBounds(bounds);
